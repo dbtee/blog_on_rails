@@ -1,0 +1,8 @@
+<div class="card-container">
+<% @posts.each do |post|  %>
+  <div class="card">
+    <h2><%= link_to post.title, post_path(post) %></h2>
+    <p><%= post.body %></p>
+  </div>
+<% end %>
+</div>
