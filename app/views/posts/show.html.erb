@@ -1,9 +1,12 @@
 <h1><%= @post.title %></h1>
 <p><%= @post.body %></p>
-<p><%= time_ago_in_words(@post.created_at)%> ago</p>
 
+<p><%= time_ago_in_words(@post.created_at)%> ago</p>
+<h4>Created by: <%= @post.user.name  || 'DELETED'%></h4>
+<% if can? :crud, @post %>
 <%= link_to "Edit", edit_post_path(@post), class: "btn-med"%>
 <%= link_to "Delete", post_path(@post), class: "btn-med", method: :delete, data: {confirm: "Are you sure?"} %>
+<% end %>
 
 <%= form_with(model: [@post, @comment], local: true) do |f| %>
 <% if @comment.errors.any? %>
@@ -34,10 +37,10 @@
     <li>
       <p class="list-group-item">
         <%= comment.body %> <br />
-        <small>
-          Commented <%= time_ago_in_words(comment.created_at) %> ago
+         Commented <%= time_ago_in_words(comment.created_at) %> ago
         </small>
         ●
+        <% if can? :crud, comment %>
         <small>
         <%= link_to(
           "Delete",
@@ -48,6 +51,7 @@
           }
         ) %>
       </small>
+      <% end %>
       </p>
     </li>
   <% end %>
