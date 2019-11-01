@@ -1,28 +1,46 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+
 Comment.destroy_all
 Post.destroy_all
+User.destroy_all
+
+
+PASSWORD = "wew"
+
+super_user = User.create(
+  name: "lad",
+  email: "nice@meme.gov",
+  password: PASSWORD,
+  is_admin: true
+)
+10.times do
+  name = Faker::Movies::LordOfTheRings.character
+  User.create(
+    name: name,
+    email: "#{name.downcase}@#{Faker::Movies::LordOfTheRings.location}.com",
+    password: PASSWORD
+  )
+end
+
+users = User.all
 
 200.times do
-  created_at = Faker::Date.backward(365 * 5)
+  created_at = Faker::Date.backward(days: 365)
   p = Post.create(
     # Faker is a ruby module. We access classes or
     # other modules inside of a module with the
     # `::` syntax. Here Hacker is a class within
     # the Faker module.
-    title: Faker::Hacker.say_something_smart,
-    body: Faker::ChuckNorris.fact,
+    title: Faker::Quote.famous_last_words,
+    body: Faker::TvShows::GameOfThrones.quote,
     created_at: created_at,
-    updated_at: created_at
+    updated_at: created_at,
+    user: users.sample
   )
   if p.valid?
     p.comments = rand(0..15).times.map do
-      Comment.new(body: Faker::GreekPhilosophers.quote)
+      Comment.new(body: Faker::GreekPhilosophers.quote,
+      user: users.sample
+      )
     end
   end
 end
@@ -33,3 +51,5 @@ comment = Comment.all
 
 puts Cowsay.say("Generated #{Post.count} posts", :frogs)
 puts Cowsay.say("Generated #{comment.count} comments", :tux)
+puts Cowsay.say("Created #{users.count}, users", :tux)
+puts "Login with #{super_user.email} and password of '#{PASSWORD}'"
